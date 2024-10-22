@@ -1,0 +1,20 @@
+name: Fetch from SVN-repo
+
+# Controls when the workflow will run
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  schedule:
+  # At 01:00 every night (Please note: GitHub actions schedule is in UTC time).
+  - cron: "0 1 * * *"
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v4
+      - name: Checkout SVN repo
+        run: svn co svn://svn.nordicpeak.com/communitybase 
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
