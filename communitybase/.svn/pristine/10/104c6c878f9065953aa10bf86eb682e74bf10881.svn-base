@@ -1,0 +1,230 @@
+<DBScripts>
+
+	<!-- Reserved for DB changes in 2.0.1 -->
+	<Script version="1"></Script>
+
+	<!-- Reserved for DB changes in 2.0.2 -->
+	<Script version="2"></Script>
+
+	<!-- Reserved for DB changes in 2.0.3 -->
+	<Script version="3"></Script>
+
+	<!-- Reserved for DB changes in 2.0.4 -->
+	<Script version="4"></Script>
+
+	<!-- Script for DB changes in 2.0.5 -->
+	<Script version="5">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `hiddengroupusers` (
+				  `userID` int(11) NOT NULL,
+				  `groupID` int(11) NOT NULL,
+				  PRIMARY KEY (`userID`,`groupID`),
+				  KEY `FK_hiddengroupusers_2` (`groupID`),
+				  CONSTRAINT `FK_hiddengroupusers_2` FOREIGN KEY (`groupID`) REFERENCES `groups` (`groupID`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  CONSTRAINT `FK_hiddengroupusers_1` FOREIGN KEY (`userID`) REFERENCES `users` (`userID`) ON DELETE CASCADE ON UPDATE CASCADE
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+			]]>
+		</Query>
+	</Script>
+
+	<!-- Script for DB changes in 2.0.6 -->
+	<Script version="6">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `groupnewsletters` (
+				  `groupID` int(11) NOT NULL,
+				  `weekLetterID` int(11) NOT NULL,
+				  PRIMARY KEY (`groupID`,`weekLetterID`),
+				  KEY `FK_groupnewsletters_2` (`weekLetterID`),
+				  CONSTRAINT `FK_groupnewsletters_1` FOREIGN KEY (`groupID`) REFERENCES `groups` (`groupID`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  CONSTRAINT `FK_groupnewsletters_2` FOREIGN KEY (`weekLetterID`) REFERENCES `newsletters` (`weekLetterID`) ON DELETE CASCADE ON UPDATE CASCADE
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				CREATE TABLE `schoolnewsletters` (
+				  `schoolID` int(11) NOT NULL,
+				  `weekLetterID` int(11) NOT NULL,
+				  PRIMARY KEY (`schoolID`,`weekLetterID`),
+				  KEY `FK_schoolnewsletters_2` (`weekLetterID`),
+				  CONSTRAINT `FK_schoolnewsletters_1` FOREIGN KEY (`schoolID`) REFERENCES `schools` (`schoolID`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  CONSTRAINT `FK_schoolnewsletters_2` FOREIGN KEY (`weekLetterID`) REFERENCES `newsletters` (`weekLetterID`) ON DELETE CASCADE ON UPDATE CASCADE
+				) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				INSERT groupnewsletters (groupID, weekLetterID) SELECT groupID, weekLetterID FROM newsletters;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `newsletters` DROP COLUMN `groupID`,
+ 				DROP FOREIGN KEY `FK_weekletter_1`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `newsletters` ADD COLUMN `global` TINYINT(1) NOT NULL AFTER `imagelocation`;
+			]]>
+		</Query>
+	</Script>
+
+	<!-- Script for DB changes in 2.0.7 -->
+	<Script version="7">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `absences` (
+				  `absenceID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+				  `groupID` int(11) NOT NULL,
+				  `name` varchar(255) NOT NULL,
+				  `comment` mediumtext,
+				  `startTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+				  `endTime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+				  `posted` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+				  `posterID` int(10) unsigned NOT NULL,
+				  `updated` timestamp NULL DEFAULT NULL,
+				  `editorID` int(10) unsigned DEFAULT NULL,
+				  PRIMARY KEY (`absenceID`),
+				  KEY `FK_absences_1` (`groupID`),
+				  CONSTRAINT `FK_absences_1` FOREIGN KEY (`groupID`) REFERENCES `groups` (`groupID`) ON DELETE CASCADE ON UPDATE CASCADE
+				) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=latin1;
+			]]>
+		</Query>
+	</Script>
+
+	<!-- Script for DB changes in 2.0.8 -->
+	<Script version="8">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `calendar` ADD COLUMN `sendReminder` TINYINT(1) UNSIGNED NOT NULL AFTER `posted`;
+			]]>
+		</Query>
+	</Script>
+
+	<!-- Script for DB changes in 2.0.9 -->
+	<Script version="9">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `absences` RENAME TO `absence_absences`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				CREATE TABLE `absence_disablednotifications` (
+				  `userID` INTEGER NOT NULL,
+				  PRIMARY KEY (`userID`),
+				  CONSTRAINT `FK_absence_disablednotifications_1` FOREIGN KEY `FK_absence_disablednotifications_1` (`userID`)
+				    REFERENCES `users` (`userID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE
+				)
+				ENGINE = InnoDB;
+
+			]]>
+		</Query>
+	</Script>
+
+	<!-- Script for DB changes in 2.0.10 -->
+	<Script version="10">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `weekmenu_templates` (
+  				`weekMenuTemplateID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+  				`name` VARCHAR(255) NOT NULL,
+  				`posterID` INTEGER UNSIGNED NOT NULL,
+				  `lastEdit` DATETIME NOT NULL,
+				  `weeks` INTEGER UNSIGNED NOT NULL,
+				  `startWeek` INTEGER UNSIGNED NOT NULL,
+				  `startYear` INTEGER UNSIGNED NOT NULL,
+				  `endWeek` INTEGER UNSIGNED NOT NULL,
+				  `endYear` INTEGER UNSIGNED NOT NULL,
+				 PRIMARY KEY (`weekMenuTemplateID`)
+				)
+				ENGINE = InnoDB;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				CREATE TABLE `weekmenu_template_menus` (
+					`weekMenuID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+				  `weekMenuTemplateID` INTEGER UNSIGNED NOT NULL,
+				  `week` INTEGER UNSIGNED NOT NULL,
+				  `monday` VARCHAR(255),
+				  `tuesday` VARCHAR(255),
+				  `wednesday` VARCHAR(255),
+				  `thursday` VARCHAR(255),
+				  `friday` VARCHAR(255),
+				  `saturday` VARCHAR(255),
+				  `sunday` VARCHAR(255),
+				  PRIMARY KEY (`weekMenuID`),
+				  CONSTRAINT `FK_weekmenu_template_menus_1` FOREIGN KEY `FK_weekmenu_template_menus_1` (`weekMenuTemplateID`)
+				    REFERENCES `weekmenu_templates` (`weekMenuTemplateID`) ON DELETE CASCADE ON UPDATE CASCADE
+				)
+				ENGINE = InnoDB;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				CREATE TABLE `weekmenu_school_menus` (
+					`schoolMenuID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+				  `schoolID` INT(11) NOT NULL,
+				  `week` INTEGER UNSIGNED NOT NULL,
+				  `year` INTEGER UNSIGNED NOT NULL,
+				  `posterID` INTEGER UNSIGNED NOT NULL,
+				  `created` DATETIME NOT NULL,
+				  `lastEdit` DATETIME NOT NULL,
+				  `monday` VARCHAR(255),
+				  `tuesday` VARCHAR(255),
+				  `wednesday` VARCHAR(255),
+				  `thursday` VARCHAR(255),
+				  `friday` VARCHAR(255),
+				  `saturday` VARCHAR(255),
+				  `sunday` VARCHAR(255),
+				  PRIMARY KEY (`schoolMenuID`),
+				  CONSTRAINT `FK_weekmenu_school_menus_1` FOREIGN KEY `FK_weekmenu_school_menus_1` (`schoolID`)
+				    REFERENCES `schools` (`schoolID`) ON DELETE CASCADE ON UPDATE CASCADE
+				)
+				ENGINE = InnoDB;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				CREATE TABLE `weekmenu_school_offsets` (
+					`schoolOffsetID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+				  `weekMenuTemplateID` INTEGER UNSIGNED NOT NULL,
+				  `schoolID` INT(11) NOT NULL,
+				  `offset` INTEGER UNSIGNED NOT NULL,
+				  PRIMARY KEY (`schoolOffsetID`),
+				  CONSTRAINT `FK_weekmenu_school_offsets_1` FOREIGN KEY `FK_weekmenu_school_offsets_1` (`weekMenuTemplateID`)
+				    REFERENCES `weekmenu_templates` (`weekMenuTemplateID`) ON DELETE CASCADE ON UPDATE CASCADE,
+				  CONSTRAINT `FK_weekmenu_school_offsets_2` FOREIGN KEY `FK_weekmenu_school_offsets_2` (`schoolID`)
+				    REFERENCES `schools` (`schoolID`) ON DELETE CASCADE ON UPDATE CASCADE
+				)
+				ENGINE = InnoDB;
+			]]>
+		</Query>
+	</Script>
+	
+	<!-- Script for DB changes in 2.0.11 -->
+	<Script version="11">
+	    <!-- Moved to pictureGallery update script -->
+	</Script>
+	
+	<!-- Script for DB changes in 2.0.12 -->
+	<Script version="12">
+	    <!-- Moved to pictureGallery update script -->
+	</Script>
+	
+	<!-- Script for DB changes in 2.0.13 -->
+	<Script version="13">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `newsletters` ADD COLUMN `draft` BOOLEAN NOT NULL AFTER `global`;
+			]]>
+		</Query>
+	</Script>	
+	
+</DBScripts>

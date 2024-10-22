@@ -1,0 +1,100 @@
+
+.jstree-use-native-checkboxes .jstree-real-checkbox {
+    display: inline !important;
+   /* margin: -1px 0 0 0 !important;*/
+   margin: 0 !important;
+}
+
+.jstree-communitybase li, 
+.jstree-communitybase ins { background-image:url("icons.png"); background-repeat:no-repeat; background-color:transparent; }
+.jstree-communitybase li { background-position:-90px 0; background-repeat:repeat-y; line-height: 20px !important; }
+.jstree-communitybase li.jstree-last { background:transparent; }
+.jstree-communitybase .jstree-open > ins { background-position:-72px 0; }
+.jstree-communitybase .jstree-closed > ins { background-position:-54px 0; }
+.jstree-communitybase .jstree-leaf > ins { background-position:-36px 0; }
+
+.jstree-communitybase .jstree-clicked {  }
+
+.jstree-communitybase a:hover { text-decoration: underline; }
+.jstree-communitybase a .jstree-icon { background-position:-56px -19px; }
+.jstree-communitybase li[rel="global"] a .jstree-icon { background-position: -55px -37px; }
+.jstree-communitybase li[rel="school"]  a .jstree-icon { background-position: -74px -38px; }
+.jstree-communitybase li[rel="group"] a .jstree-icon { background-position: -54px -55px; }
+
+.jstree-communitybase a.jstree-loading .jstree-icon { background:url("throbber.gif") center center no-repeat !important; }
+.jstree-communitybase a:focus { text-decoration: none !important; }
+.jstree-communitybase li a[href="#"], .jstree-communitybase li a[href="javascript:void(0);"], .jstree-communitybase a .jstree-checkbox { cursor: default; }
+.jstree-communitybase li a[href="#"]:hover, .jstree-communitybase li a[href="javascript:void(0);"]:hover, .jstree-communitybase a .jstree-checkbox:hover { text-decoration: none; }
+.jstree-communitybase li a[href="#"].jstree-hovered, .jstree-communitybase li a[href="javascript:void(0);"].jstree-hovered { background:#EEEEEE; border:1px solid #EEEEEE; padding:0 2px 0 1px; }
+
+.jstree-communitybase ul.jstree-clickable-nodes > li > a { cursor: pointer; }
+.jstree-communitybase.jstree-focused { background: none; }
+
+.jstree-communitybase .jstree-no-dots li, 
+.jstree-communitybase .jstree-no-dots .jstree-leaf > ins { background:transparent; }
+.jstree-communitybase .jstree-no-dots .jstree-open > ins { background-position:-18px 0; }
+.jstree-communitybase .jstree-no-dots .jstree-closed > ins { background-position:0 0; }
+
+.jstree-communitybase .jstree-no-icons a .jstree-icon { display:none; }
+
+.jstree-communitybase .jstree-search { font-style:italic; }
+
+.jstree-communitybase .jstree-no-icons .jstree-checkbox { display:inline-block; }
+.jstree-communitybase .jstree-no-checkboxes .jstree-checkbox { display:none !important; }
+
+.jstree-communitybase li.jstree-force-open > ins.jstree-icon { display: none; }
+.jstree-communitybase li.jstree-force-open > ul > li { margin-left: 0; }
+
+.jstree-use-native-checkboxes li > a > .jstree-checkbox { background: none !important; }
+.jstree-communitybase .jstree-checked > a > .jstree-checkbox { background-position:-38px -19px; }
+.jstree-communitybase .jstree-unchecked > a > .jstree-checkbox { background-position:-2px -19px; }
+.jstree-communitybase .jstree-undetermined > a > .jstree-checkbox { background-position:-20px -19px; }
+.jstree-communitybase .jstree-checked > a > .jstree-checkbox:hover { background-position:-38px -37px; }
+.jstree-communitybase .jstree-unchecked > a > .jstree-checkbox:hover { background-position:-2px -37px; }
+.jstree-communitybase .jstree-undetermined > a > .jstree-checkbox:hover { background-position:-20px -37px; }
+
+#vakata-dragged.jstree-communitybase ins { background:transparent !important; }
+#vakata-dragged.jstree-communitybase .jstree-ok { background:url("icons.png") -2px -53px no-repeat !important; }
+#vakata-dragged.jstree-communitybase .jstree-invalid { background:url("icons.png") -18px -53px no-repeat !important; }
+#jstree-marker.jstree-communitybase { background:url("icons.png") -41px -57px no-repeat !important; text-indent:-100px; }
+
+.jstree-communitybase a.jstree-search { color: #237812 !important; }
+.jstree-communitybase .jstree-locked a { color:silver; cursor:default; }
+
+.jstree-actionbar { margin-bottom: 5px; }
+.jstree-scrollable { overflow-x:hidden; overflow-y:scroll; height: 150px; padding-right: 3px; padding-right: 20px !ie-only; }
+.jstree-loading-text { display: none; }
+.jstree-loading { background: url("loading.gif") 50% 45px no-repeat; min-height: 150px; position: relative; }
+.jstree-loading .jstree-loading-text { display: block !important; position: absolute; left: 40%; top: 80px; color: #74716F; }
+
+#vakata-contextmenu.jstree-communitybase-context, 
+#vakata-contextmenu.jstree-communitybase-context li ul { background:#f0f0f0; border:1px solid #979797; -moz-box-shadow: 1px 1px 2px #999; -webkit-box-shadow: 1px 1px 2px #999; box-shadow: 1px 1px 2px #999; }
+#vakata-contextmenu.jstree-communitybase-context li { }
+#vakata-contextmenu.jstree-communitybase-context a { color:black; }
+#vakata-contextmenu.jstree-communitybase-context a:hover, 
+#vakata-contextmenu.jstree-communitybase-context .vakata-hover > a { padding:0 5px; background:#e8eff7; border:1px solid #aecff7; color:black; -moz-border-radius:2px; -webkit-border-radius:2px; border-radius:2px; }
+#vakata-contextmenu.jstree-communitybase-context li.jstree-contextmenu-disabled a, 
+#vakata-contextmenu.jstree-communitybase-context li.jstree-contextmenu-disabled a:hover { color:silver; background:transparent; border:0; padding:1px 4px; }
+#vakata-contextmenu.jstree-communitybase-context li.vakata-separator { background:white; border-top:1px solid #e0e0e0; margin:0; }
+#vakata-contextmenu.jstree-communitybase-context li ul { margin-left:-4px; }
+
+/* IE6 BEGIN */
+.jstree-communitybase li, 
+.jstree-communitybase ins,
+#vakata-dragged.jstree-communitybase .jstree-invalid, 
+#vakata-dragged.jstree-communitybase .jstree-ok, 
+#jstree-marker.jstree-communitybase { _background-image:url("icons.gif"); }
+.jstree-communitybase .jstree-open ins { _background-position:-72px 0; }
+.jstree-communitybase .jstree-closed ins { _background-position:-54px 0; }
+.jstree-communitybase .jstree-leaf ins { _background-position:-36px 0; }
+.jstree-communitybase a ins.jstree-icon { _background-position:-56px -19px; }
+.jstree-communitybase li[rel="global"] a ins.jstree-icon { _background-position: -55px -37px; }
+.jstree-communitybase li[rel="school"] a ins.jstree-icon { _background-position: -74px -38px; }
+.jstree-communitybase li[rel="group"] a ins.jstree-icon { _background-position: -54px -55px; }
+
+#vakata-contextmenu.jstree-communitybase-context ins { _display:none; }
+#vakata-contextmenu.jstree-communitybase-context li { _zoom:1; }
+.jstree-communitybase .jstree-undetermined a .jstree-checkbox { _background-position:-20px -19px; }
+.jstree-communitybase .jstree-checked a .jstree-checkbox { _background-position:-38px -19px; }
+.jstree-communitybase .jstree-unchecked a .jstree-checkbox { _background-position:-2px -19px; }
+/* IE6 END */

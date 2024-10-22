@@ -1,0 +1,6 @@
+/ckeditor/plugins/MediaEmbed = /com/mediaembed
+/ckeditor = /com/ckeditor
+/utils/ckeditor = /se/dosf/communitybase
+/utils/treeview = /se/dosf/communitybase
+/utils/js = /se/dosf/communitybase
+/jquery = /com

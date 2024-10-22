@@ -1,0 +1,87 @@
+<DBScripts>
+
+	<!-- Create new tables -->
+
+	<Script version="1">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `linkarchive_links` (
+				  `linkID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+				  `url` text NOT NULL,
+				  `description` text,
+				  `posted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				  `global` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
+				  `poster` int(10) UNSIGNED NOT NULL,
+				  PRIMARY KEY(`linkID`)
+				)
+				ENGINE=INNODB 
+				CHARACTER SET latin1 
+				COLLATE latin1_swedish_ci;
+			]]>	
+		</Query>
+	
+		<Query>
+			<![CDATA[
+				CREATE TABLE `linkarchive_linkgroups` (
+				  `groupID` int(11) UNSIGNED NOT NULL DEFAULT '0',
+				  `linkID` int(11) UNSIGNED NOT NULL DEFAULT '0',
+				  PRIMARY KEY(`groupID`, `linkID`),
+				  CONSTRAINT `Ref_12` FOREIGN KEY (`linkID`)
+				    REFERENCES `linkarchive_links`(`linkID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE
+				)
+				ENGINE=INNODB 
+				CHARACTER SET latin1 
+				COLLATE latin1_swedish_ci ;
+			]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				CREATE TABLE `linkarchive_linkschools` (
+				  `schoolID` int(11) UNSIGNED NOT NULL DEFAULT '0',
+				  `linkID` int(11) UNSIGNED NOT NULL DEFAULT '0',
+				  PRIMARY KEY(`schoolID`, `linkID`),
+				  CONSTRAINT `Ref_11` FOREIGN KEY (`linkID`)
+				    REFERENCES `linkarchive_links`(`linkID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE
+				)
+				ENGINE=INNODB 
+				CHARACTER SET latin1 
+				COLLATE latin1_swedish_ci;
+			]]>	
+		</Query>
+		
+	</Script>
+
+	<!-- Data migration: This will be handled between version 1 and 2 by a LinkArchiveDataMigrator -->
+	
+	<!-- Remove obsolete tables -->
+	<Script version="2">
+		<Query>
+			<![CDATA[
+				DROP TABLE globallinks;
+				]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				DROP TABLE schoollinks;
+				]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				DROP TABLE linkgroups;
+				]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				DROP TABLE links;
+				]]>	
+		</Query>
+	</Script>
+</DBScripts>

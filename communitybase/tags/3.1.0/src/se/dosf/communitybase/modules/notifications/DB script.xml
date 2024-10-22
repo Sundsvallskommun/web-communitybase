@@ -1,0 +1,49 @@
+<DBScripts>
+	<Script version="1">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_notifications` (
+				  `notificationID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+				  `sectionID` INTEGER UNSIGNED,
+				  `sourceModuleID` INTEGER UNSIGNED NOT NULL,
+				  `userID` INTEGER UNSIGNED NOT NULL,
+				  `added` DATETIME NOT NULL,
+				  `enabled` BOOLEAN NOT NULL,
+				  `read` BOOLEAN NOT NULL,
+				  `notificationType` VARCHAR(255),
+				  `externalNotificationID` INTEGER UNSIGNED,
+				  PRIMARY KEY (`notificationID`),
+				  CONSTRAINT `FK_communitybase_notifications_1` FOREIGN KEY `FK_communitybase_notifications_1` (`sectionID`)
+				    REFERENCES `openhierarchy_sections` (`sectionID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE
+				)
+				ENGINE = InnoDB;
+			]]>
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_notification_attributes` (
+				  `notificationID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+				  `name` VARCHAR(255) NOT NULL,
+				  `value` VARCHAR(1024) NOT NULL,
+				  PRIMARY KEY (`notificationID`, `name`),
+				  CONSTRAINT `FK_communitybase_notification_attributes_1` FOREIGN KEY `FK_communitybase_notification_attributes_1` (`notificationID`)
+				    REFERENCES `communitybase_notifications` (`notificationID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE
+				)
+				ENGINE = InnoDB;
+			]]>
+		</Query>		
+	</Script>
+			
+	<Script version="2">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_notifications` CHANGE COLUMN `read` `isRead` TINYINT(1) NOT NULL;
+			]]>
+		</Query>		
+	</Script>			
+</DBScripts>

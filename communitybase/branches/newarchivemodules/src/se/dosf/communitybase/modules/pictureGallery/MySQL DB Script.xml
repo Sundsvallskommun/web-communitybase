@@ -1,0 +1,234 @@
+<DBScripts>
+
+	<!-- Create new tables -->
+	<Script version="1">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `picturegallery_galleries` (
+  `galleryID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(65) NOT NULL,
+  `description` text,
+  `posted` timestamp NOT NULL,
+  `global` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY(`galleryID`)
+)
+ENGINE=INNODB
+CHARACTER SET latin1 
+COLLATE latin1_swedish_ci ;
+			]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				CREATE TABLE `picturegallery_galleryschools` (
+  `schoolID` int(11) NOT NULL DEFAULT '0',
+  `galleryID` int(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY(`schoolID`, `galleryID`),
+  CONSTRAINT `Ref_07` FOREIGN KEY (`galleryID`)
+    REFERENCES `picturegallery_galleries`(`galleryID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)
+ENGINE=INNODB
+CHARACTER SET latin1 
+COLLATE latin1_swedish_ci ;
+			]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+					CREATE TABLE `picturegallery_pictures` (
+  `pictureID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `galleryID` int(11) UNSIGNED NOT NULL DEFAULT '0',
+  `picSmall` blob NOT NULL,
+  `picMedium` mediumblob,
+  `picLarge` longblob,
+  `filename` varchar(200) NOT NULL,
+  `posted` timestamp NOT NULL,
+  `postedBy` int(10) UNSIGNED NOT NULL,
+  PRIMARY KEY(`pictureID`),
+  CONSTRAINT `Ref_08` FOREIGN KEY (`galleryID`)
+    REFERENCES `picturegallery_galleries`(`galleryID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)
+ENGINE=INNODB
+CHARACTER SET latin1 
+COLLATE latin1_swedish_ci ;
+			]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+					CREATE TABLE `picturegallery_gallerygroups` (
+  `groupID` int(11) NOT NULL DEFAULT '0',
+  `galleryID` int(11) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY(`groupID`, `galleryID`),
+  CONSTRAINT `Ref_06` FOREIGN KEY (`galleryID`)
+    REFERENCES `picturegallery_galleries`(`galleryID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)
+ENGINE=INNODB
+CHARACTER SET latin1 
+COLLATE latin1_swedish_ci ;
+			]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+					CREATE TABLE `picturegallery_comments` (
+  `commentID` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `pictureID` int(11) UNSIGNED NOT NULL DEFAULT '0',
+  `comment` text NOT NULL,
+  `posted` timestamp NOT NULL,
+  `postedBy` int(10) UNSIGNED NOT NULL,
+  PRIMARY KEY(`commentID`),
+  CONSTRAINT `Ref_09` FOREIGN KEY (`pictureID`)
+    REFERENCES `picturegallery_pictures`(`pictureID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)
+ENGINE=INNODB
+CHARACTER SET latin1 
+COLLATE latin1_swedish_ci ;
+			]]>	
+		</Query>
+	</Script>
+	
+	<!-- Data migration: This will be handled between version 1 and 2 by a PictureGalleryDataMigrator -->
+	
+	<!-- Remove obsolete tables -->
+	<Script version="2">
+		<Query>
+			<![CDATA[
+				DROP TABLE grouppicturecomments;
+				]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				DROP TABLE schoolpicturecomments;
+				]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				DROP TABLE picturegallerygrouppictures;
+				]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				DROP TABLE picturegalleryschoolpictures;
+				]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				DROP TABLE picturegallerygroupsections;
+				]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				DROP TABLE picturegalleryschoolsections;
+				]]>	
+		</Query>
+	</Script>
+	
+	<Script version="3">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `picturegallery_comments` CHANGE COLUMN `postedBy` `poster` INT(10) UNSIGNED NOT NULL;
+				]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				ALTER TABLE `picturegallery_pictures` 
+				CHANGE COLUMN `postedBy` `poster` INT(10) UNSIGNED NOT NULL,
+				CHANGE COLUMN `picSmall` `small` BLOB NOT NULL,
+				CHANGE COLUMN `picMedium` `medium` MEDIUMBLOB DEFAULT NULL,
+				CHANGE COLUMN `picLarge` `full` LONGBLOB DEFAULT NULL;
+				]]>	
+		</Query>
+	</Script>
+	
+	<!-- Code avoids running this if already applied from old CommunityBase.xml -->
+	<Script version="4">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `picturegallery_galleries` ADD COLUMN `category` VARCHAR(65) AFTER `global`;
+			]]>
+		</Query>
+	</Script>
+	
+	<!-- Code avoids running this if already applied from old CommunityBase.xml -->
+	<Script version="5">
+		<!--  Remove invalid groups and schools. Add missing foreign keys. -->
+		<Query>
+			<![CDATA[
+				DELETE FROM picturegallery_gallerygroups WHERE groupID NOT IN (SELECT groupID FROM groups);
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				DELETE FROM picturegallery_galleryschools WHERE schoolID NOT IN (SELECT schoolID FROM schools);
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				DELETE FROM filearchive_sectiongroups WHERE groupID NOT IN (SELECT groupID FROM groups);
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				DELETE FROM filearchive_sectionschools WHERE schoolID NOT IN (SELECT schoolID FROM schools);
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `picturegallery_gallerygroups` ADD CONSTRAINT `FK_picturegallery_gallerygroups_2` FOREIGN KEY `FK_picturegallery_gallerygroups_2` (`groupID`)
+		    REFERENCES `groups` (`groupID`)
+		    ON DELETE CASCADE
+		    ON UPDATE CASCADE;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `picturegallery_galleryschools` ADD CONSTRAINT `FK_picturegallery_galleryschools_2` FOREIGN KEY `FK_picturegallery_galleryschools_2` (`schoolID`)
+		    REFERENCES `schools` (`schoolID`)
+		    ON DELETE CASCADE
+		    ON UPDATE CASCADE;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `filearchive_sectiongroups` ADD CONSTRAINT `FK_filearchive_sectiongroups_2` FOREIGN KEY `FK_filearchive_sectiongroups_2` (`groupID`)
+		    REFERENCES `groups` (`groupID`)
+		    ON DELETE CASCADE
+		    ON UPDATE CASCADE;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `filearchive_sectionschools` ADD CONSTRAINT `FK_filearchive_sectionschools_2` FOREIGN KEY `FK_filearchive_sectionschools_2` (`schoolID`)
+		    REFERENCES `schools` (`schoolID`)
+		    ON DELETE CASCADE
+		    ON UPDATE CASCADE;
+			]]>
+		</Query>
+	</Script>
+	
+	<!-- Data migration: This will be handled between version 5 and 6 by PictureGalleryDataMigrator2 -->
+	
+	<Script version="6">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `picturegallery_pictures` DROP COLUMN `small`, DROP COLUMN `medium`, DROP COLUMN `full`;
+			]]>
+		</Query>
+	</Script>
+		 
+</DBScripts>

@@ -1,0 +1,125 @@
+<DBScripts>
+
+	<!-- Create new tables -->
+	<Script version="1">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `filearchive_sections` (
+				  `sectionID` int(11) NOT NULL AUTO_INCREMENT,
+				  `name` varchar(65) NOT NULL,
+				  `global` tinyint(1) NOT NULL DEFAULT '0',
+				  PRIMARY KEY(`sectionID`)
+				)
+				ENGINE=INNODB
+				CHARACTER SET latin1 
+				COLLATE latin1_swedish_ci ;
+			]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				CREATE TABLE `filearchive_files` (
+				  `fileID` int(11) NOT NULL AUTO_INCREMENT,
+				  `sectionID` int(11) NOT NULL DEFAULT '0',
+				  `description` text,
+				  `file` longblob NOT NULL,
+				  `filename` varchar(200) NOT NULL,
+				  `postedBy` int(10) UNSIGNED NOT NULL,
+				  `fileSize` int(10) UNSIGNED NOT NULL,
+				  `posted` timestamp NOT NULL,
+				  PRIMARY KEY(`fileID`),
+				  CONSTRAINT `Ref_05` FOREIGN KEY (`sectionID`)
+				    REFERENCES `filearchive_sections`(`sectionID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE
+				)
+				ENGINE=INNODB
+				CHARACTER SET latin1 
+				COLLATE latin1_swedish_ci ;
+			]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				CREATE TABLE `filearchive_sectionschools` (
+				  `schoolID` int(11) NOT NULL DEFAULT '0',
+				  `sectionID` int(11) NOT NULL DEFAULT '0',
+				  PRIMARY KEY(`schoolID`, `sectionID`),
+				  CONSTRAINT `Ref_04` FOREIGN KEY (`sectionID`)
+				    REFERENCES `filearchive_sections`(`sectionID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE
+				)
+				ENGINE=INNODB
+				CHARACTER SET latin1 
+				COLLATE latin1_swedish_ci ;
+			]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				CREATE TABLE `filearchive_sectiongroups` (
+				  `groupID` int(11) NOT NULL DEFAULT '0',
+				  `sectionID` int(11) NOT NULL DEFAULT '0',
+				  PRIMARY KEY(`groupID`, `sectionID`),
+				  CONSTRAINT `Ref_02` FOREIGN KEY (`sectionID`)
+				    REFERENCES `filearchive_sections`(`sectionID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE
+				)
+				ENGINE=INNODB
+				CHARACTER SET latin1 
+				COLLATE latin1_swedish_ci ;
+			]]>	
+		</Query>
+	</Script>
+	
+	<!-- Data migration: This will be handled between version 1 and 2 by FileArchiveDataMigrator -->
+	
+	<!-- Remove obsolete tables -->
+	<Script version="2">
+		<Query>
+			<![CDATA[
+				DROP TABLE filearchivegroupfiles;
+				]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				DROP TABLE filearchiveschoolfiles;
+				]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				DROP TABLE filearchivegroupsections;
+				]]>	
+		</Query>
+		
+		<Query>
+			<![CDATA[
+				DROP TABLE filearchiveschoolsections;
+				]]>	
+		</Query>
+	</Script>
+		
+	<Script version="3">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `filearchive_files` CHANGE COLUMN `postedBy` `poster` INT(10) UNSIGNED NOT NULL,
+				 CHANGE COLUMN `fileSize` `size` INT(10) UNSIGNED NOT NULL;
+				]]>	
+		</Query>
+	</Script>
+	
+	<!-- Data migration: This will be handled between version 1 and 2 by FileArchiveDataMigrator2 -->
+	
+	<Script version="4">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `filearchive_files` DROP COLUMN `file`;
+				]]>	
+		</Query>
+	</Script>
+		
+</DBScripts>
