@@ -1,0 +1,548 @@
+<DBScripts>
+	<Script version="1">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_roles` (
+				  `roleID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+				  `name` VARCHAR(255) NOT NULL,
+				  `addContentAccess` TINYINT(1) UNSIGNED NOT NULL,
+				  `updateOwnContentAccess` TINYINT(1) UNSIGNED NOT NULL,
+				  `deleteOwnContentAccess` TINYINT(1) UNSIGNED NOT NULL,
+				  `updateOtherContentAccess` TINYINT(1) UNSIGNED NOT NULL,
+				  `deleteOtherContentAccess` TINYINT(1) UNSIGNED NOT NULL,
+				  `manageMembersAccess` TINYINT(1) UNSIGNED NOT NULL,
+				  `manageModulesAccess` TINYINT(1) UNSIGNED NOT NULL,
+				  `manageSectionAccessModeAccess` TINYINT(1) UNSIGNED NOT NULL,
+				  PRIMARY KEY (`roleID`)
+				)
+				ENGINE = InnoDB;
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="2">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_invitation_invitations` (
+				  `invitationID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+				  `email` varchar(255) NOT NULL,
+				  `linkID` varchar(36) NOT NULL,
+				  `sendCount` int(10) unsigned NOT NULL,
+				  `lastSent` datetime DEFAULT NULL,
+				  PRIMARY KEY (`invitationID`)
+				) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_invitatation_section_invitations` (
+				  `sectionID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+				  `invitationID` int(10) unsigned NOT NULL,
+				  `roleID` int(10) unsigned NOT NULL,
+				  PRIMARY KEY (`sectionID`,`invitationID`),
+				  KEY `FK_communitybase_invitatation_section_invitations_1` (`invitationID`),
+				  CONSTRAINT `FK_communitybase_invitatation_section_invitations_1` FOREIGN KEY (`invitationID`) REFERENCES `communitybase_invitation_invitations` (`invitationID`) ON DELETE CASCADE ON UPDATE CASCADE
+				) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="3">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_section_types` (
+				  `sectionTypeID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+				  `name` VARCHAR(255) NOT NULL,
+				  `creatorRoleID` int(10) unsigned NOT NULL,
+				  PRIMARY KEY (`sectionTypeID`)
+				)
+				ENGINE = InnoDB;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_section_type_modules` (
+				  `sectionTypeID` INTEGER UNSIGNED NOT NULL,
+				  `classname` VARCHAR(255) NOT NULL,
+				  `autoEnable` BOOLEAN NOT NULL,
+				  `managementMode` VARCHAR(45) NOT NULL,
+				  `accessMode` VARCHAR(45) NOT NULL,
+				  PRIMARY KEY (`sectionTypeID`, `classname`),
+				  INDEX `Index_2`(`sectionTypeID`)
+				)
+				ENGINE = InnoDB;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_section_type_modules` ADD CONSTRAINT `FK_communitybase_section_type_modules_1` FOREIGN KEY `FK_communitybase_section_type_modules_1` (`sectionTypeID`)
+				    REFERENCES `communitybase_section_types` (`sectionTypeID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_section_instances` (
+				  `sectionID` INTEGER UNSIGNED NOT NULL,
+				  `sectionTypeID` INTEGER UNSIGNED NOT NULL,
+				  `accessMode` VARCHAR(45) NOT NULL,
+				  `archived` BOOLEAN NOT NULL,
+				  PRIMARY KEY (`sectionID`),
+				  CONSTRAINT `FK_communitybase_section_instances_1` FOREIGN KEY `FK_communitybase_section_instances_1` (`sectionID`)
+				    REFERENCES `openhierarchy_sections` (`sectionID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE,
+				  CONSTRAINT `FK_communitybase_section_instances_2` FOREIGN KEY `FK_communitybase_section_instances_2` (`sectionTypeID`)
+				    REFERENCES `communitybase_section_types` (`sectionTypeID`)
+				    ON DELETE RESTRICT
+				    ON UPDATE CASCADE
+				)
+				ENGINE = InnoDB;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_section_type_roles` (
+				  `sectionTypeID` INTEGER UNSIGNED NOT NULL,
+				  `roleID` INTEGER UNSIGNED NOT NULL,
+				  PRIMARY KEY (`sectionTypeID`, `roleID`),
+				  CONSTRAINT `FK_communitybase_section_type_roles_1` FOREIGN KEY `FK_communitybase_section_type_roles_1` (`sectionTypeID`)
+				    REFERENCES `communitybase_section_types` (`sectionTypeID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE,
+				  CONSTRAINT `FK_communitybase_section_type_roles_2` FOREIGN KEY `FK_communitybase_section_type_roles_2` (`roleID`)
+				    REFERENCES `communitybase_roles` (`roleID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE
+				)
+				ENGINE = InnoDB;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_section_type_add_access_groups` (
+				  `sectionTypeID` INTEGER UNSIGNED NOT NULL,
+				  `groupID` INTEGER UNSIGNED NOT NULL,
+				  PRIMARY KEY (`sectionTypeID`, `groupID`),
+				  CONSTRAINT `FK_communitybase_section_type_add_access_groups_1` FOREIGN KEY `FK_communitybase_section_type_add_access_groups_1` (`sectionTypeID`)
+				    REFERENCES `communitybase_section_types` (`sectionTypeID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE
+				)
+				ENGINE = InnoDB;
+			]]>
+		</Query>
+	</Script>			
+		
+	<Script version="4">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_section_types` ADD CONSTRAINT `FK_communitybase_section_types_1` FOREIGN KEY `FK_communitybase_section_types_1` (`creatorRoleID`)
+				    REFERENCES `communitybase_roles` (`roleID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE;				
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="5">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_section_instances` ADD COLUMN `description` VARCHAR(255) AFTER `archived`;			
+			]]>
+		</Query>
+	</Script>	
+	
+	<Script version="6">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_section_favourites` (
+				  `sectionID` INTEGER UNSIGNED NOT NULL,
+				  `userID` VARCHAR(45) NOT NULL,
+				  PRIMARY KEY (`sectionID`, `userID`),
+				  CONSTRAINT `FK_communitybase_section_favourites_1` FOREIGN KEY `FK_communitybase_section_favourites_1` (`sectionID`)
+				    REFERENCES `openhierarchy_sections` (`sectionID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE
+				)
+				ENGINE = InnoDB;
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="7">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_section_instances` MODIFY COLUMN `description` VARCHAR(4096) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL;	
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_section_type_modules` RENAME TO `communitybase_section_type_foreground_modules`,
+				 CHANGE COLUMN `classname` `moduleID` INTEGER UNSIGNED NOT NULL,
+				 DROP PRIMARY KEY,
+				 ADD PRIMARY KEY  USING BTREE(`sectionTypeID`, `moduleID`),
+				 DROP FOREIGN KEY `FK_communitybase_section_type_modules_1`,
+				 ADD CONSTRAINT `FK_communitybase_section_type_foreground_modules_1` FOREIGN KEY `FK_communitybase_section_type_foreground_modules_1` (`sectionTypeID`)
+				    REFERENCES `communitybase_section_types` (`sectionTypeID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE,
+				 ADD CONSTRAINT `FK_communitybase_section_type_foreground_modules_2` FOREIGN KEY `FK_communitybase_section_type_foreground_modules_2` (`moduleID`)
+				    REFERENCES `openhierarchy_foreground_modules` (`moduleID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE;				
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_section_type_background_modules` (
+				  `sectionTypeID` INTEGER UNSIGNED NOT NULL,
+				  `moduleID` INTEGER UNSIGNED NOT NULL,
+				  `autoEnable` BOOLEAN NOT NULL,
+				  `managementMode` VARCHAR(45) NOT NULL,
+				  `accessMode` VARCHAR(45) NOT NULL,
+				  PRIMARY KEY (`sectionTypeID`, `moduleID`),
+				  CONSTRAINT `FK_communitybase_section_type_background_modules_1` FOREIGN KEY `FK_communitybase_section_type_background_modules_1` (`sectionTypeID`)
+				    REFERENCES `communitybase_section_types` (`sectionTypeID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE,
+				  CONSTRAINT `FK_communitybase_section_type_background_modules_2` FOREIGN KEY `FK_communitybase_section_type_background_modules_2` (`moduleID`)
+				    REFERENCES `openhierarchy_background_modules` (`moduleID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE
+				)
+				ENGINE = InnoDB;					
+			]]>
+		</Query>						
+	</Script>
+	
+	<Script version="8">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_section_type_foreground_modules` ADD COLUMN `menuIndex` INTEGER UNSIGNED NOT NULL AFTER `accessMode`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				UPDATE `communitybase_section_type_foreground_modules` SET menuIndex = moduleID;
+			]]>
+		</Query>
+	</Script>	
+	
+	<Script version="9">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_roles` ADD COLUMN `manageArchivedAccess` BOOLEAN NOT NULL AFTER `manageSectionAccessModeAccess`,
+				 ADD COLUMN `deleteRoomAccessModeAccess` BOOLEAN NOT NULL AFTER `manageArchivedAccess`;
+			]]>
+		</Query>
+	</Script>	
+		
+	<Script version="10">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_roles` CHANGE COLUMN `deleteRoomAccessModeAccess` `deleteRoomAccess` TINYINT(1) NOT NULL;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_section_instances` ADD COLUMN `deleted` DATETIME DEFAULT NULL AFTER `description`;
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="11">
+		<Query>
+			<![CDATA[
+				INSERT INTO openhierarchy_section_attributes (sectionID, name, value) SELECT i.sectionID, 'sectionTypeID', i.sectionTypeID FROM communitybase_section_instances i WHERE i.sectionTypeID IS NOT NULL;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				INSERT INTO openhierarchy_section_attributes (sectionID, name, value) SELECT i.sectionID, 'accessMode', i.accessMode FROM communitybase_section_instances i WHERE i.accessMode IS NOT NULL;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				INSERT INTO openhierarchy_section_attributes (sectionID, name, value) SELECT i.sectionID, 'archived', 'true' FROM communitybase_section_instances i WHERE i.archived = 1;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				INSERT INTO openhierarchy_section_attributes (sectionID, name, value) SELECT i.sectionID, 'description', i.description FROM communitybase_section_instances i WHERE i.description IS NOT NULL;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				INSERT INTO openhierarchy_section_attributes (sectionID, name, value) SELECT i.sectionID, 'deleted', i.deleted FROM communitybase_section_instances i WHERE i.deleted IS NOT NULL;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_blog_posts` DROP FOREIGN KEY `FK_communitybase_blog_posts_1`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_blog_posts` ADD CONSTRAINT `FK_communitybase_blog_posts_1` FOREIGN KEY `FK_communitybase_blog_posts_1` (`sectionID`)
+			   REFERENCES `openhierarchy_sections` (`sectionID`) ON DELETE CASCADE ON UPDATE CASCADE;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_calendar_posts` DROP FOREIGN KEY `FK_communitybase_calendar_posts_1`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_calendar_posts` ADD CONSTRAINT `FK_communitybase_calendar_posts_1` FOREIGN KEY `FK_communitybase_calendar_posts_1` (`sectionID`)
+			   REFERENCES `openhierarchy_sections` (`sectionID`) ON DELETE CASCADE ON UPDATE CASCADE;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_file_archive_categories` DROP FOREIGN KEY `FK_communitybase_file_archive_categories_1`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_file_archive_categories` ADD CONSTRAINT `FK_communitybase_file_archive_categories_1` FOREIGN KEY `FK_communitybase_file_archive_categories_1` (`sectionID`)
+			   REFERENCES `openhierarchy_sections` (`sectionID`) ON DELETE CASCADE ON UPDATE CASCADE;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_link_archive_links` DROP FOREIGN KEY `FK_communitybase_link_archive_links_1`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_link_archive_links` ADD CONSTRAINT `FK_communitybase_link_archive_links_1` FOREIGN KEY `FK_communitybase_link_archive_links_1` (`sectionID`)
+			   REFERENCES `openhierarchy_sections` (`sectionID`) ON DELETE CASCADE ON UPDATE CASCADE;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_page_pages` DROP FOREIGN KEY `FK_communitybase_page_pages_1`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_page_pages` ADD CONSTRAINT `FK_communitybase_page_pages_1` FOREIGN KEY `FK_communitybase_page_pages_1` (`sectionID`)
+			   REFERENCES `openhierarchy_sections` (`sectionID`) ON DELETE CASCADE ON UPDATE CASCADE;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_prefered_sections` DROP FOREIGN KEY `FK_communitybase_prefered_sections_1`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_prefered_sections` ADD CONSTRAINT `FK_communitybase_prefered_sections_1` FOREIGN KEY `FK_communitybase_prefered_sections_1` (`sectionID`)
+			   REFERENCES `openhierarchy_sections` (`sectionID`) ON DELETE CASCADE ON UPDATE CASCADE;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_task_tasklists` DROP FOREIGN KEY `FK_communitybase_task_tasklists_1`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_task_tasklists` ADD CONSTRAINT `FK_communitybase_task_tasklists_1` FOREIGN KEY `FK_communitybase_task_tasklists_1` (`sectionID`)
+			   REFERENCES `openhierarchy_sections` (`sectionID`) ON DELETE CASCADE ON UPDATE CASCADE;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_link_archive_links` DROP FOREIGN KEY `FK_communitybase_link_archive_links_1`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_link_archive_links` ADD CONSTRAINT `FK_communitybase_link_archive_links_1` FOREIGN KEY `FK_communitybase_link_archive_links_1` (`sectionID`)
+			   REFERENCES `openhierarchy_sections` (`sectionID`) ON DELETE CASCADE ON UPDATE CASCADE;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				DROP TABLE `communitybase_section_instances`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				DELETE FROM communitybase_prefered_sections WHERE sectionID IN (SELECT sectionID FROM openhierarchy_section_attributes WHERE name = 'deleted');
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				DELETE FROM communitybase_section_favourites WHERE sectionID IN (SELECT sectionID FROM openhierarchy_section_attributes WHERE name = 'deleted');
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="12">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_section_type_add_access_groups` ADD COLUMN `accessModes` VARCHAR(32) NOT NULL AFTER `groupID`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				UPDATE `communitybase_section_type_add_access_groups` SET `accessModes` = 'OPEN,CLOSED,HIDDEN';
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="13">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_section_type_admin_groups` (
+				  `sectionTypeID` INTEGER UNSIGNED NOT NULL,
+				  `groupID` INTEGER UNSIGNED NOT NULL,
+				  PRIMARY KEY (`sectionTypeID`, `groupID`),
+				  CONSTRAINT `FK_communitybase_section_type_admin_groups_1` FOREIGN KEY `FK_communitybase_section_type_admin_groups_1` (`sectionTypeID`)
+				    REFERENCES `communitybase_section_types` (`sectionTypeID`)
+				    ON DELETE CASCADE
+				    ON UPDATE CASCADE
+				)
+				ENGINE = InnoDB;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				RENAME TABLE `communitybase_section_type_add_access_groups` TO `communitybase_section_type_add_access`;
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="14">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_section_group_role` (
+					`sectionID` INT UNSIGNED NOT NULL,
+					`groupID` INT UNSIGNED NOT NULL,
+					`roleID` INT UNSIGNED NOT NULL,
+					PRIMARY KEY (`sectionID`, `groupID`),
+					CONSTRAINT `FK_communitybase_sectiongroup_roles` FOREIGN KEY (`roleID`) REFERENCES `communitybase_roles` (`roleID`) ON UPDATE CASCADE ON DELETE CASCADE,
+					CONSTRAINT `FK_communitybase_sectiongroup_sections` FOREIGN KEY (`sectionID`) REFERENCES `openhierarchy_sections` (`sectionID`) ON UPDATE CASCADE ON DELETE CASCADE
+				)
+				COLLATE='latin1_swedish_ci'
+				ENGINE=InnoDB;
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="15">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_roles` ADD COLUMN `priority` INT(10) UNSIGNED NOT NULL AFTER `deleteRoomAccess`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				UPDATE `communitybase_roles` SET `priority` = `roleID`;
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="16">
+		<Query>
+			<![CDATA[
+				DELETE FROM `communitybase_invitatation_section_invitations` WHERE sectionID NOT IN (SELECT sectionID FROM `openhierarchy_sections`);
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_invitatation_section_invitations` ADD CONSTRAINT `FK_communitybase_invitatation_openhierarchy_sections` FOREIGN KEY (`sectionID`) REFERENCES `openhierarchy_sections` (`sectionID`) ON UPDATE CASCADE ON DELETE CASCADE;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				RENAME TABLE `communitybase_invitatation_section_invitations` TO `communitybase_invitation_section_invitations`;
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="17">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_section_types` ADD COLUMN `deleteDateMode` VARCHAR(10) NOT NULL AFTER `name`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				UPDATE `communitybase_section_types` SET `deleteDateMode` = 'OPTIONAL';
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="18">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_section_types` ADD COLUMN `defaultRoleID` INT UNSIGNED NULL AFTER `creatorRoleID`, ADD CONSTRAINT `FK_communitybase_section_types_communitybase_roles` FOREIGN KEY (`defaultRoleID`) REFERENCES `communitybase_roles` (`roleID`) ON UPDATE CASCADE;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				UPDATE communitybase_section_types SET defaultRoleID = (SELECT tr.roleID FROM communitybase_section_type_roles tr INNER JOIN communitybase_roles r ON (tr.roleID = r.roleID) WHERE communitybase_section_types.sectionTypeID = tr.sectionTypeID and r.name = 'Deltagare')
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="19">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_section_types` ADD COLUMN `defaultModuleID` INT UNSIGNED NOT NULL AFTER `defaultRoleID`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				UPDATE communitybase_section_types SET defaultModuleID = (SELECT tfm.moduleID FROM communitybase_section_type_foreground_modules tfm INNER JOIN openhierarchy_foreground_modules fm ON (tfm.moduleID = fm.moduleID) WHERE fm.classname = 'se.sundsvall.collaborationroom.modules.blog.LatestPostsModule' AND tfm.sectionTypeID = sectionTypeID)
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_section_type_foreground_modules` ADD COLUMN `allowedStartpage` TINYINT UNSIGNED NOT NULL AFTER `menuIndex`;
+			]]>
+		</Query>
+		<Query>
+			<![CDATA[
+				UPDATE communitybase_section_type_foreground_modules SET allowedStartpage = 1 WHERE moduleID IN (SELECT moduleID FROM openhierarchy_foreground_modules WHERE classname IN ('se.sundsvall.collaborationroom.modules.blog.LatestPostsModule', 'se.sundsvall.collaborationroom.modules.members.MembersModule', 'se.sundsvall.collaborationroom.modules.filearchive.FileArchiveModule', 'se.sundsvall.collaborationroom.modules.blog.BlogModule', 'se.sundsvall.collaborationroom.modules.calendar.CalendarModule', 'se.sundsvall.collaborationroom.modules.page.PageModule', 'se.sundsvall.collaborationroom.modules.task.TaskModule', 'se.sundsvall.collaborationroom.modules.link.LinkArchiveModule'))
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="20">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_section_types` ADD COLUMN `allowsSecureSections` TINYINT UNSIGNED NOT NULL AFTER `defaultModuleID`;
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="21">
+		<Query>
+			<![CDATA[
+				CREATE TABLE `communitybase_section_accessrequests` (
+					`sectionID` INT UNSIGNED NOT NULL,
+					`userID` INT UNSIGNED NOT NULL,
+					`comment` VARCHAR(1024) NOT NULL,
+					PRIMARY KEY (`sectionID`, `userID`),
+					CONSTRAINT `FK_openhierarchy_section_accessreq` FOREIGN KEY (`sectionID`) REFERENCES `openhierarchy_sections` (`sectionID`) ON UPDATE CASCADE ON DELETE CASCADE
+				)
+				COLLATE='latin1_swedish_ci';
+			]]>
+		</Query>
+	</Script>
+	
+	<Script version="22">
+		<Query>
+			<![CDATA[
+				ALTER TABLE `communitybase_roles` ADD COLUMN `addCommentAccess` TINYINT(1) UNSIGNED NOT NULL AFTER `deleteOtherContentAccess`;
+			]]>
+		</Query>
+	</Script>
+</DBScripts>

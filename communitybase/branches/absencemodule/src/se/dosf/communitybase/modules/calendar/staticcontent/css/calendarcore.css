@@ -1,0 +1,36 @@
+body {
+}
+
+/*a { font-size:11px; }*/
+#jMonthCalendar { width: 100% !important; float: left !important; height: auto !important; }        
+.MonthlyCalendar .MonthNavigation { border-bottom:solid 1px #ddd; clear:both; height:25px; padding: 0px 10px 0 10px; }
+.MonthlyCalendar .MonthNavNext { width:13%; float:right; text-align:right; }
+.MonthlyCalendar .MonthNavNext a { color:#000; }
+.MonthlyCalendar .MonthNavPrev { width:13%; float:left; }
+.MonthlyCalendar .MonthNavPrev a { color:#000; }
+.MonthlyCalendar .TodayLink { width:10%; float:left; }
+.MonthlyCalendar .MonthName { width:70%; text-align:center; font-weight:bold; font-size: 14px; float:left; }
+
+.MonthlyCalendar { width:100%; border:solid 1px #ddd; border-collapse:collapse; }
+.MonthlyCalendar #CalendarHead { width:100%; background:#F7F7F7 none repeat scroll 0 0; }
+.MonthlyCalendar #CalendarHead tr { height: 20px; }
+.MonthlyCalendar #CalendarHead .DateHeader { width:14%; text-align:center; color: #000000; background: none; text-shadow: none; font-size: 100%; }
+.MonthlyCalendar #CalendarHead .Weekend { width:14%; text-align:center; color:#ac191f; }
+
+.MonthlyCalendar #CalendarBody { }
+.DateBox { height:100px; vertical-align:top; border:solid 1px #ddd; }
+.Weekend .DateLabel a { cursor:pointer; padding:0 5px 2px; text-decoration:none; line-height:16px; color:#ac191f; }
+.DateBox .DateLabel a { text-decoration:none; color:#000; }
+.DateLabel { height:16px; width:100%; background:#F7F7F7 none repeat scroll 0 0; text-align:right; }
+.DateLabel a { cursor:pointer; padding:0 5px 2px; text-decoration:none; line-height:16px; color:#000; }
+
+
+#CalendarBody .Inactive, #CalendarBody .Weekend { background:#fafafa none repeat scroll 0 0; }
+.Today { }
+.Today .DateLabel { background: #afcdd8 none repeat scroll 0 0; }
+
+#jMonthCalendar .Event { font-size:12px; padding:4px; /*background-color:#C0D0FF;*/ background-color: #CCCCCC; margin-bottom:1px; -moz-border-radius:0 8px 8px 8px; border:solid 1px #808383; cursor:pointer; }
+#jMonthCalendar .Event:hover { background-color: #D7D7D7; }
+
+.Event a { text-decoration:none; color:#000; font-size:11px; }
+.Event a:hover { text-decoration:underline; font-size:11px; }
