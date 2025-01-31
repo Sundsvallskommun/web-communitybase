@@ -18,3 +18,12 @@ jobs:
         run: svn co svn://svn.nordicpeak.com/communitybase 
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v5
+        
+  # Prevents this action from being disabled due to repository inactivity. See: https://docs.github.com/en/actions/administering-github-actions/usage-limits-billing-and-administration#disabling-and-enabling-workflows
+  workflow-keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: liskin/gh-workflow-keepalive@v1
