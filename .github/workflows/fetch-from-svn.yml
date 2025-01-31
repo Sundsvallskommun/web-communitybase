@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   schedule:
   # At 01:00 every night (Please note: GitHub actions schedule is in UTC time).
-  - cron: "0 1 * * *"
+    - cron: "0 1 * * *"
 
 jobs:
   fetch:
